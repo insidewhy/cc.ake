@@ -6,8 +6,11 @@ path     = require 'path'
 exports.nodeModulePath = ->
     process.env.PATH = "#{path.join process.cwd(), 'node_modules', '.bin'}:" + process.env.PATH
 
-exports.assertAll = (cmd...) ->
-  do assertHelper = ->
+exports.invoke = (cmds...) ->
+  return -> invoke cmd for cmd in cmds
+
+exports.assert = (cmd...) ->
+  do helper = ->
     return unless cmd.length
     first = cmd[0]
     if typeof first == 'string'
@@ -17,12 +20,13 @@ exports.assertAll = (cmd...) ->
           process.exit 1
         else
           do cmd.shift
-          do assertHelper
+          do helper
     else
-      err = do first
-      if typeof err is 'string'
+      try
+        do first
+        do cmd.shift
+        do helper
+      catch e
         console.warn "error: #{err}"
         process.exit 1
-      do cmd.shift
-      do assertHelper
-
+# vim:ts=2 sw=2

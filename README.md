@@ -14,15 +14,15 @@ ake    = require 'cc.ake'
 do ake.nodeModulePath
 
 # ensure every argument passes. strings are treated as unix commands and
-# functions are run normally. Each type signals an error differently
-# and any error causes the coffeescript process to exit.
-ake.assertAll 'rm -f bad',
+# functions are run normally. Either a bad shell exit status or an exception
+# thrown from a function will cause the process to exit.
+ake.assert 'rm -f bad',
+  ake.invoke 'othertask' # invoke another task
   'cp -n something somewhere' # if exit status is bad, terminate process
   'echo yo'
   ->
     do stuff
-    return true # return anything other than string to signal success
   ->
     # this will terminate the coffeescript process
-    return "an error string"
+    throw "an error"
 ```
