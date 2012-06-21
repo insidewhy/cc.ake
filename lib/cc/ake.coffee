@@ -27,6 +27,6 @@ exports.assert = (cmd...) ->
         do cmd.shift
         do helper
       catch e
-        console.warn "error: #{err}"
+        console.warn "error: #{e}"
         process.exit 1
 # vim:ts=2 sw=2
