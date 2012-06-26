@@ -4,7 +4,7 @@ path     = require 'path'
 
 # add node_modules binaries to head of path
 exports.nodeModulePath = ->
-    process.env.PATH = "#{path.join __dirname, 'node_modules', '.bin'}:" + process.env.PATH
+    process.env.PATH = "#{path.join process.cwd(), 'node_modules', '.bin'}:" + process.env.PATH
 
 exports.invoke = (cmds...) ->
   return -> invoke cmd for cmd in cmds
