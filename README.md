@@ -25,4 +25,11 @@ ake.assert 'rm -f bad',
   ->
     # this will terminate the coffeescript process
     throw "an error"
+
+ake.watch 'testdir',
+  /.coffee$/, (fname) ->
+    console.log 'changed', fname
+    exec 'coffee -c testdir'
+  /.js$/, (fname) ->
+    console.log 'js updated', fname
 ```
