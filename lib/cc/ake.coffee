@@ -1,7 +1,7 @@
 {exec}   = require 'child_process'
 console  = require 'console'
 path     = require 'path'
-{watch}  = require 'fs'
+fs       = require 'fs'
 
 assertCmds = []
 
@@ -12,13 +12,17 @@ exports.nodeModulePath = ->
 exports.invoke = (cmds...) ->
   return -> invoke cmd for cmd in cmds
 
+# watch files for changes, returning true unless the system does not support
+# file watches
 exports.watch = (dir, args...) ->
+  return false unless fs.watch
+
   regexps = []
   while args.length
     regexps.push [ args.shift(), args.shift() ]
 
   ignoreUntil = {} # ignore fast changes
-  watch dir, (event, fname) ->
+  fs.watch dir, (event, fname) ->
     return unless event is 'change'
     for regexp in regexps
       if regexp[0].test fname
@@ -28,6 +32,7 @@ exports.watch = (dir, args...) ->
         ignoreUntil[fname] = now + 100
         return
     return
+  true
 
 exports.assert = (cmd...) ->
   if assertCmds.length
@@ -56,4 +61,8 @@ exports.assert = (cmd...) ->
         console.warn "error: #{e}"
         process.exit 1
   return
+
+exports.lnsf = (src, dest) ->
+  fs.symlinkSync src, dest unless fs.existsSync dest
+
 # vim:ts=2 sw=2
