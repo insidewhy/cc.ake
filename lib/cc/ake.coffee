@@ -62,6 +62,9 @@ exports.assert = (cmd...) ->
         process.exit 1
   return
 
+exports.cp = (src, dest) ->
+  fs.createReadStream(src).pipe(fs.createWriteStream(dest))
+
 exports.lnsf = (src, dest) ->
   fs.symlinkSync src, dest unless fs.existsSync dest
 
